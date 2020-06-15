@@ -47,7 +47,7 @@
         },
         "githubRepoURL": {
             "type": "string",
-            "defaultValue": "https://github.com/arledesma/AzureNetworkWatcherNSGFlowLogsConnector.git"
+            "defaultValue": "https://github.com/armor/AzureNetworkWatcherNSGFlowLogsConnector.git"
         },
         "githubRepoBranch": {
             "type": "string",

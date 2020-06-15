@@ -4,7 +4,7 @@ The NwNSGGlowLogs branch contains a working version of the deployment template, 
 
 NOTE: Native support for event hubs is not yet available, but would be the preferred method.
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Farledesma%2FAzureNetworkWatcherNSGFlowLogsConnector%2Ffeature%2Farmor%2FazureDeploy.json)
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Farmor%2FAzureNetworkWatcherNSGFlowLogsConnector%2Ffeature%2Farmor%2FazureDeploy.json)
 
 ## Overview
 
