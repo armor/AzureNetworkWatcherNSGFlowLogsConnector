@@ -24,6 +24,11 @@ namespace nsgFunc
             return result;
         }
 
+        public static void SetEnvironmentVariable(string variable, string value)
+        {
+            System.Environment.SetEnvironmentVariable(variable, value);
+        }
+
         public static async Task<int> SendMessagesDownstreamAsync(string nsgMessagesString, ExecutionContext executionContext, Binder cefLogBinder, ILogger log)
         {
             //

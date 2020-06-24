@@ -12,10 +12,8 @@
 
     public partial class Util
     {
-        // ReSharper disable InconsistentNaming
-       
-        // If global setting for logging is enabled. Log Information for debugging. Will be helpful in investigation.
-        private static readonly bool ENABLE_DEBUG_LOG = bool.TryParse(GetEnvironmentVariable("enableDebugLog"), out _);
+        private static readonly string DefaultArmorAddress = "https://1d.log.armor.com";
+        private static readonly int DefaultArmorPort = 5443;
        
         // ReSharper restore InconsistentNaming
 
@@ -73,14 +71,6 @@
             [JsonProperty("message_encoded")]
             public string MessageEncoded { get; }
 
-            /// <summary>
-            /// Gets the payload.
-            /// </summary>
-            /// <value>
-            /// The payload.
-            /// </value>
-            [JsonProperty("payload")]
-            public string Payload { get; }
 
             /// <summary>
             /// Gets or sets the tenant identifier.
@@ -101,6 +91,8 @@
 
         public static async Task ObArmor(string newClientContent, ILogger log)
         {
+            SetupEnvironment(log);
+
             // TODO: Figure this out
             // Should this be creating a collection of ipfix packets
             // and sending that as a single event with the original newClientContent as the message?
@@ -108,8 +100,38 @@
             // and let the processor handle the rest
             foreach (var content in ConvertToArmorPayload(newClientContent, log))
             {
+                log.LogDebug($"Payload to be sent to logstash: {content}");
                 await obLogstash(content, log).ConfigureAwait(false);
             }
+        }
+
+        private static void SetupEnvironment(ILogger log)
+        {
+            var tenantId = GetTenantIdFromEnvironment(log);
+            var armorAddress = Util.GetEnvironmentVariable("armorAddress").ToLower();
+
+            if(string.IsNullOrEmpty(armorAddress))
+            {
+                log.LogDebug($"Enviroment armorAddress not set: Defaulting to {DefaultArmorAddress}");
+                // if not specified then use the defualt address
+                armorAddress = DefaultArmorAddress;
+            }
+
+            // remove any schema as we will force https
+            armorAddress = armorAddress.Replace("https://", "").Replace("http://", "");
+
+            if (!int.TryParse(Util.GetEnvironmentVariable("armorPort"), out var armorPort) || armorPort <= 0 || armorPort >= 65535)
+            {
+                armorPort = DefaultArmorPort;
+            }
+
+            var logstashAddress = new UriBuilder("https://", armorAddress, armorPort).Uri.AbsoluteUri;
+            var logstashHttpUser = tenantId.ToString();
+            var logstashHttpPwd = Guid.Parse(tenantId.ToString("D32")).ToString("D");
+
+            Util.SetEnvironmentVariable("logstashAddress", logstashAddress);
+            Util.SetEnvironmentVariable("logstashHttpUser", logstashHttpUser);
+            Util.SetEnvironmentVariable("logstashHttpPwd", logstashHttpPwd);
         }
 
         public static System.Collections.Generic.IEnumerable<string> ConvertToArmorPayload(string newClientContent, ILogger log)
@@ -137,11 +159,8 @@
             {
                 var records = denormalizedRecords.ToList();
             
-                if (ENABLE_DEBUG_LOG)
-                {
-                    log.LogInformation(
-                        $"Start of IP FIX conversion flowTuples count: {records.Count} and record: {JsonConvert.SerializeObject(records)}");
-                }
+                log.LogDebug(
+                    $"Start of IP FIX conversion flowTuples count: {records.Count} and record: {JsonConvert.SerializeObject(records)}");
 
                 if (records.Count <= 0)
                 {
@@ -209,12 +228,9 @@
 
                 var base64Encoded = Convert.ToBase64String(exportData, Base64FormattingOptions.None);
 
-                if (ENABLE_DEBUG_LOG)
-                {
-                    // https://stackoverflow.com/questions/5666413/ipfix-data-over-udp-to-c-sharp-can-i-decode-the-data
-                    log.LogInformation(
-                        $"End of IP FIX conversion ipFixEncodedLog: {base64Encoded}");
-                }
+                // https://stackoverflow.com/questions/5666413/ipfix-data-over-udp-to-c-sharp-can-i-decode-the-data
+                log.LogDebug(
+                    $"End of IP FIX conversion ipFixEncodedLog: {base64Encoded}");
 
                 return base64Encoded;
             }
