@@ -42,7 +42,7 @@ The steps to fully implement the Azure Network Watcher NSG Flow Logs Connector a
 * cefLogAccount               - a storage account connection string - account into which trace logs of incoming json and outgoing cef are dropped
    Example: ```DefaultEndpointsProtocol=https;AccountName=yyy;AccountKey=xxx;EndpointSuffix=core.windows.net```
 * armorAddress             - internet address of the Armor server / service
-   Example: ```1d.log.armor.com```
+   Example: ```https://1d.log.armor.com```
 * armorPort                - TCP port to connect to on destination server / service
    Example: ```5443```
 * armorAccountId                 - Your Account ID with Armor

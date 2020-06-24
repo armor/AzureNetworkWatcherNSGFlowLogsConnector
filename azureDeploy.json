@@ -71,7 +71,7 @@
         },
         "armorAddress": {
             "type": "string",
-            "defaultValue": "1d.log.armor.com",
+            "defaultValue": "https://1d.log.armor.com",
             "metadata": {
                 "description": "Armor only: IP or DNS address of ingestion endpoint."
             }
