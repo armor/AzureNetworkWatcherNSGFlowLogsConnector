@@ -91,7 +91,7 @@
         public static async Task ObArmor(string newClientContent, ILogger log)
         {
             SetupEnvironment(log);
-
+            log.LogMetric("BlobLength", newClientContent.Length);
             // TODO: Figure this out
             // Should this be creating a collection of ipfix packets
             // and sending that as a single event with the original newClientContent as the message?
@@ -100,6 +100,7 @@
             foreach (var content in ConvertToArmorPayload(newClientContent, log))
             {
                 log.LogDebug($"Payload to be sent to logstash: {content}");
+                log.LogMetric("ContentLength", content.Length);
                 await obLogstash(content, log).ConfigureAwait(false);
             }
         }
