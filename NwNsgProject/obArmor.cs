@@ -112,8 +112,8 @@
 
             if(string.IsNullOrEmpty(armorAddress))
             {
-                log.LogDebug($"Enviroment armorAddress not set: Defaulting to {DefaultArmorAddress}");
-                // if not specified then use the defualt address
+                log.LogDebug($"Environment armorAddress not set: Defaulting to {DefaultArmorAddress}");
+                // if not specified then use the default address
                 armorAddress = DefaultArmorAddress;
             }
 
@@ -129,6 +129,7 @@
             var logstashHttpUser = tenantId.ToString();
             var logstashHttpPwd = Guid.Parse(tenantId.ToString("D32")).ToString("D");
 
+            log.LogInformation($"Sending to Armor destination: {logstashAddress}");
             Util.SetEnvironmentVariable("logstashAddress", logstashAddress);
             Util.SetEnvironmentVariable("logstashHttpUser", logstashHttpUser);
             Util.SetEnvironmentVariable("logstashHttpPwd", logstashHttpPwd);
@@ -159,8 +160,10 @@
             {
                 var records = denormalizedRecords.ToList();
             
-                log.LogDebug(
+#if DEBUG
+                log.LogInformation(
                     $"Start of IP FIX conversion flowTuples count: {records.Count} and record: {JsonConvert.SerializeObject(records)}");
+#endif
 
                 if (records.Count <= 0)
                 {
@@ -228,9 +231,10 @@
 
                 var base64Encoded = Convert.ToBase64String(exportData, Base64FormattingOptions.None);
 
+#if DEBUG
                 // https://stackoverflow.com/questions/5666413/ipfix-data-over-udp-to-c-sharp-can-i-decode-the-data
-                log.LogDebug(
-                    $"End of IP FIX conversion ipFixEncodedLog: {base64Encoded}");
+                log.LogDebug($"End of IP FIX conversion ipFixEncodedLog: {base64Encoded}");
+#endif
 
                 return base64Encoded;
             }

@@ -44,6 +44,8 @@ namespace nsgFunc
                 {
                     log.LogError($"StatusCode from Logstash: {response.StatusCode}, and reason: {response.ReasonPhrase}");
                 }
+
+                log.LogInformation($"response: {response.StatusCode}\n{await response.Content.ReadAsStringAsync().ConfigureAwait(false)}");
             }
             catch (System.Net.Http.HttpRequestException e)
             {
