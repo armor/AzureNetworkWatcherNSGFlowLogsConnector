@@ -21,20 +21,20 @@ The steps to fully implement the Azure Network Watcher NSG Flow Logs Connector a
 * AppName                     - this is the name of the function app. In the Azure Portal, this is the name that will appear in the list of resources.
    Example: ```MyNSGApp```
 * appServicePlan              - "ServicePlan" or "Consumption".
-   If you select "ServicePlan", an App Service Plan will be created and you will be billed accordingly. If you select "Consumption", you will be billed based on the Consumption plan.
+   If you select "ServicePlan", an App Service Plan will be created and you will be billed accordingly. If you select "Consumption", you will be billed based on the Consumption plan. To learn more about Azure Functions pricing refer [here](https://azure.microsoft.com/en-gb/pricing/details/functions/).
 * appServicePlanTier          - "Free", "Shared", "Basic", "Standard", "Premium", "PremiumV2"
    Example: ```Standard```
-   (only relevant for ServicePlan)
-* appServicePlanName          - depends on tier, for full details see "Choose your pricing tier" in the portal on an App service plan "Scale up" applet.
+   (only relevant for ServicePlan). Armor recommends `Standard` for production workloads. Pricing is based on the size and number of instances you run. Refer [here](https://azure.microsoft.com/en-us/pricing/details/app-service/windows/) for pricing.
+* appServicePlanName          - depends on tier (Armor recommends `Standard`), for full details see "Choose your pricing tier" in the portal on an App service plan "Scale up" applet.
    Example: For standard tier, "S1", "S2", "S3" are options for plan name
    (only relevant for ServicePlan)
 * appServicePlanCapacity      - how many instances do you want to set for the upper limit?
    Example: For standard tier, S2, set a value from 1 to 10
    (only relevant for ServicePlan)
 * githubRepoURL                     - this is the URL of the repo that contains the function app source. You would put your fork's address here.
-   Example: ```https://github.com/microsoft/AzureNetworkWatcherNSGFlowLogsConnector```
+   Example: ```https://github.com/armor/AzureNetworkWatcherNSGFlowLogsConnector.git```
 * githubRepoBranch                  - this is the name of the branch containing the code you want to deploy.
-   Example: ```master```
+   Example: ```feature/armor```
 * nsgSourceDataConnection     - a storage account connection string
    Example: ```DefaultEndpointsProtocol=https;AccountName=yyy;AccountKey=xxx;EndpointSuffix=core.windows.net```
 * outputBinding               - Points to the destination service - the service that will receive the NSG flow log data. Options are "armor", "eventhub".
