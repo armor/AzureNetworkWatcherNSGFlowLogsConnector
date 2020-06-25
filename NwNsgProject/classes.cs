@@ -471,15 +471,3 @@ class NSGFlowLogRecords
 {
     public NSGFlowLogRecord[] records { get; set; }
 }
-
-class ArmorRecord
-{
-    public string Message;
-    public ArmorRecord(string record)
-    {
-        Records = new List<DenormalizedRecord>();
-        Message = record;
-    }
-    
-    public List<DenormalizedRecord> Records { get; set; }
-}
