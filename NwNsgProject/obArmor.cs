@@ -12,6 +12,10 @@
 
     public partial class Util
     {
+        // ReSharper disable InconsistentNaming
+        // If global setting for logging is enabled. Log Information for debugging. Will be helpful in investigation.
+        private static readonly bool ENABLE_DEBUG_LOG = bool.TryParse(GetEnvironmentVariable("enableDebugLog"), out _);
+
         private static readonly string DefaultArmorAddress = "https://1d.log.armor.com";
         private static readonly int DefaultArmorPort = 5443;
        
@@ -101,9 +105,17 @@
             // and let the processor handle the rest
             foreach (var content in ConvertToArmorPayload(newClientContent, log))
             {
-                log.LogDebug($"Payload to be sent to logstash: {content}");
+                DebugLog(log, "Sending to LogStash:\n{content}", content);
                 // log.LogMetric("ContentLength", content.Length);
                 await obLogstash(content, log).ConfigureAwait(false);
+            }
+        }
+
+        private static void DebugLog(ILogger logger, string message, params object[] args)
+        {
+            if(ENABLE_DEBUG_LOG)
+            {
+                logger.LogInformation(message, args);
             }
         }
 
@@ -114,7 +126,7 @@
 
             if(string.IsNullOrEmpty(armorAddress))
             {
-                log.LogDebug($"Environment armorAddress not set: Defaulting to {DefaultArmorAddress}");
+                log.LogWarning($"Environment armorAddress not set: Defaulting to {DefaultArmorAddress}");
                 // if not specified then use the default address
                 armorAddress = DefaultArmorAddress;
             }
@@ -162,10 +174,7 @@
             {
                 var records = denormalizedRecords.ToList();
             
-#if DEBUG
-                log.LogInformation(
-                    $"Start of IP FIX conversion flowTuples count: {records.Count} and record: {JsonConvert.SerializeObject(records)}");
-#endif
+                DebugLog(log, "Start of IP FIX conversion flowTuples {count} and {records}", records.Count, JsonConvert.SerializeObject(records));
 
                 if (records.Count <= 0)
                 {
@@ -232,10 +241,8 @@
 
                 var base64Encoded = Convert.ToBase64String(exportData, Base64FormattingOptions.None);
 
-#if DEBUG
                 // https://stackoverflow.com/questions/5666413/ipfix-data-over-udp-to-c-sharp-can-i-decode-the-data
-                log.LogDebug($"End of IP FIX conversion ipFixEncodedLog: {base64Encoded}");
-#endif
+                DebugLog(log, "End of IP FIX conversion ipFixEncodedLog: {base64Encoded}", base64Encoded);
 
                 return base64Encoded;
             }
