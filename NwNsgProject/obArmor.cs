@@ -34,7 +34,7 @@
             {
                 Message = message;
                 MessageEncoded = messageEncoded;
-                MessageType = "aws-vpc-flows"; //TODO: Need to add NSG Flow Log type once finalized. Right now routing through vpc log.
+                MessageType = "azure-nsg-flows";
                 Tags = new[] { "relayed" };
                 TenantId = tenantId;
                 ExternalId = Guid.Parse(tenantId.ToString("D32")).ToString("D");
