@@ -144,7 +144,7 @@
             var logstashHttpUser = tenantId.ToString();
             var logstashHttpPwd = Guid.Parse(tenantId.ToString("D32")).ToString("D");
 
-            log.LogInformation($"Sending to Armor destination: {logstashAddress}");
+            DebugLog(log, "Sending to Armor destination: {logstashAddress}", logstashAddress);
             Util.SetEnvironmentVariable("logstashAddress", logstashAddress);
             Util.SetEnvironmentVariable("logstashHttpUser", logstashHttpUser);
             Util.SetEnvironmentVariable("logstashHttpPwd", logstashHttpPwd);
