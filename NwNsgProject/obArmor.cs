@@ -14,7 +14,8 @@
     {
         // ReSharper disable InconsistentNaming
         // If global setting for logging is enabled. Log Information for debugging. Will be helpful in investigation.
-        private static readonly bool ENABLE_DEBUG_LOG = bool.TryParse(GetEnvironmentVariable("enableDebugLog"), out _);
+        private static readonly bool ENABLE_DEBUG_LOG;
+        private static readonly bool isEnableDebugLogSuccess = bool.TryParse(GetEnvironmentVariable("enableDebugLog"), out ENABLE_DEBUG_LOG);
 
         private static readonly string DefaultArmorAddress = "https://1d.log.armor.com";
         private static readonly int DefaultArmorPort = 5443;
