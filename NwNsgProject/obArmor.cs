@@ -99,11 +99,6 @@
             // TODO: fully setup appinsights for metrics
             // log.LogMetric("BlobLength", newClientContent.Length);
 
-            // TODO: Figure this out
-            // Should this be creating a collection of ipfix packets
-            // and sending that as a single event with the original newClientContent as the message?
-            // It feels like we should send this all as a single event into the eventing platform
-            // and let the processor handle the rest
             foreach (var content in ConvertToArmorPayload(newClientContent, log))
             {
                 DebugLog(log, "Sending to LogStash:\n{content}", content);
