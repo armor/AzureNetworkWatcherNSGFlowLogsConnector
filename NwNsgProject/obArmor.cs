@@ -194,7 +194,7 @@
                         .Field(NetFlowInformationElement.InputBytes, 4) // Will be always mapping to InputBytes even for direction egress.
                         .Field(NetFlowInformationElement.FirstSwitched, 4)
                         .Field(NetFlowInformationElement.LastSwitched, 4)
-                        .Field(NetFlowInformationElement.InterfaceName, 32);
+                        .Field(NetFlowInformationElement.InterfaceName, 65535);
 
                 var templateData =
                     new TemplateData(templateDef);
