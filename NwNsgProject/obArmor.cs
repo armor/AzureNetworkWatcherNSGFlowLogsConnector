@@ -127,15 +127,18 @@
                 armorAddress = DefaultArmorAddress;
             }
 
-            // remove any schema as we will force https
-            armorAddress = armorAddress.Replace("https://", "").Replace("http://", "");
-
             if (!int.TryParse(Util.GetEnvironmentVariable("armorPort"), out var armorPort) || armorPort <= 0 || armorPort >= 65535)
             {
                 armorPort = DefaultArmorPort;
             }
 
-            var logstashAddress = new UriBuilder("https://", armorAddress, armorPort).Uri.AbsoluteUri;
+            // overwrite any schema passed in for armorAddress with https:
+            // if no schema supplied with armorAddress then add https: schema
+            // always add the armorPort to the URI
+            var logstashAddress = new UriBuilder(armorAddress) {
+                    Scheme = "https:",
+                    Port = armorPort
+                }.Uri.AbsoluteUri;
             var logstashHttpUser = tenantId.ToString();
             var logstashHttpPwd = Guid.Parse(tenantId.ToString("D32")).ToString("D");
 
